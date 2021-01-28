@@ -2,8 +2,6 @@
 # Declare Global Variables and Functions here
 #--------------------------------------------
 
-[int]$selectedProcess = 1
-
 ## - [ Section to initialize DataTable objects] - ##
 ## - Create DataTable:
 $processTable = New-Object System.Data.DataTable;
