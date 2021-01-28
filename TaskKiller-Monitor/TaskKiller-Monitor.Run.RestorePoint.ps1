@@ -26,8 +26,7 @@
 #Define a Param block to use custom parameters in the project
 #Param ($CustomParameter)
 
-function Main
-{
+function Main {
 <#
     .SYNOPSIS
         The Main function starts the project application.
@@ -43,14 +42,14 @@ function Main
 		$ConsoleOutput (Type: System.Collections.ArrayList)
 #>
 	Param ([String]$Commandline)
-	
+		
 	#--------------------------------------------------------------------------
 	#TODO: Add initialization script here (Load modules and check requirements)
 	
 	
 	#--------------------------------------------------------------------------
 	
-	if ((Show-MainForm_psf) -eq 'OK')
+	if((Show-MainForm_psf) -eq 'OK')
 	{
 		
 	}
@@ -62,14 +61,14 @@ function Main
 #endregion Source: Startup.pss
 
 #region Source: Globals.ps1
-#--------------------------------------------
-# Declare Global Variables and Functions here
-#--------------------------------------------
-
-
-#Sample function that provides the location of the script
-function Get-ScriptDirectory
-{
+	#--------------------------------------------
+	# Declare Global Variables and Functions here
+	#--------------------------------------------
+	
+	
+	#Sample function that provides the location of the script
+	function Get-ScriptDirectory
+	{
 	<#
 		.SYNOPSIS
 			Get-ScriptDirectory returns the proper location of the script.
@@ -80,40 +79,24 @@ function Get-ScriptDirectory
 		.NOTES
 			Returns the correct path within a packaged executable.
 	#>
-	[OutputType([string])]
-	param ()
-	if ($null -ne $hostinvocation)
-	{
-		Split-Path $hostinvocation.MyCommand.path
+		[OutputType([string])]
+		param ()
+		if ($null -ne $hostinvocation)
+		{
+			Split-Path $hostinvocation.MyCommand.path
+		}
+		else
+		{
+			Split-Path $script:MyInvocation.MyCommand.Path
+		}
 	}
-	else
-	{
-		Split-Path $script:MyInvocation.MyCommand.Path
-	}
-}
-
-#Sample variable that provides the location of the script
-[string]$ScriptDirectory = Get-ScriptDirectory
-
-
-
+	
+	#Sample variable that provides the location of the script
+	[string]$ScriptDirectory = Get-ScriptDirectory
+	
+	
+	
 #endregion Source: Globals.ps1
-
-function refreshData
-{
-	$os = Get-Ciminstance Win32_OperatingSystem
-	$cpuLoadString = Get-CimInstance win32_processor | Measure-Object -Property LoadPercentage -Average | Format-Table -HideTableHeaders -Property Average | Out-String
-	$cpuLoadString = $cpuLoadString -replace '\s+', ''
-	$cpuLoadInt = $cpuLoadString -as [int]
-	$ramLoad = 100 - [math]::Round((100/$os.TotalVisibleMemorySize) * $os.FreePhysicalMemory, 2)
-	$refresTime = Get-Date -Format "HH:mm:ss" | Out-String
-	$refresTime = $refresTime -replace '\s+', ''
-	$lblRefreshDate.text = "$refresTime Uhr"
-	$lblRamVal.text = "$ramLoad%"
-	$lblCpuVal.text = "$cpuLoadInt%"
-	$pbRam.Value = $ramLoad
-	$pbCpu.Value = $cpuLoadInt
-}
 
 #region Source: MainForm.psf
 function Show-MainForm_psf
@@ -125,7 +108,7 @@ function Show-MainForm_psf
 	[void][reflection.assembly]::Load('System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	[void][reflection.assembly]::Load('System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a')
 	#endregion Import Assemblies
-	
+
 	#----------------------------------------------
 	#region Generated Form Objects
 	#----------------------------------------------
@@ -149,23 +132,22 @@ function Show-MainForm_psf
 	$lightToolStripMenuItem = New-Object 'System.Windows.Forms.ToolStripMenuItem'
 	$InitialFormWindowState = New-Object 'System.Windows.Forms.FormWindowState'
 	#endregion Generated Form Objects
-	
+
 	#----------------------------------------------
 	# User Generated Script
 	#----------------------------------------------
 	
-	$MainForm_Load = {
+	$MainForm_Load={
 		#TODO: Initialize Form Controls here
-		refreshData
 		Set-ControlTheme $MainForm -Theme Dark
 	}
 	
-	$darkToolStripMenuItem_Click = {
+	$darkToolStripMenuItem_Click={
 		#TODO: Place custom script here
 		Set-ControlTheme -Control $MainForm -Theme Dark
 	}
 	
-	$lightToolStripMenuItem_Click = {
+	$lightToolStripMenuItem_Click={
 		Set-ControlTheme -Control $MainForm -Theme Light
 	}
 	
@@ -472,42 +454,63 @@ namespace SAPIENTypes
 	}
 	#endregion
 	
+	$lblRamVal_Click={
+		#TODO: Place custom script here
+		
+	}
+	
+	$pbCpu_Click={
+		#TODO: Place custom script here
+		
+	}
+	
+	$pbRam_Click={
+		#TODO: Place custom script here
+		
+	}
+	
+	$btnOpenTaskmgr_Click={
+		#TODO: Place custom script here
+		
+	}
+	
+	$btnCloseMonitor_Click={
+		#TODO: Place custom script here
+		$MainForm.close #closes the window
+	}
+	
+	$btnCloseAll_Click={
+		#TODO: Place custom script here
+		
+	}
+	
+	
 	$btnRefresh_Click = {
-		refreshData
+		$CpuUsage
+		$RamUsage
 	}
 	
-	$btnOpenTaskmgr_Click = {
-		Taskmgr.exe
-	}
+	$CpuUsage = Get-CimInstance win32_processor | Measure-Object -Property LoadPercentage -Average
 	
-	$btnCloseMonitor_Click = {
-		$MainForm.Close()
-	}
-	
-	$btnCloseAll_Click = {
-		$MainForm.Close()
-		Get-Process -Name Starter.ps1 | where $_Id -NE $PID | Stop-Process
-		#Stop-Job -Name "..\Starter.ps1"
-	}
 	
 	# --End User Generated Script--
 	#----------------------------------------------
 	#region Generated Events
 	#----------------------------------------------
 	
-	$Form_StateCorrection_Load =
+	$Form_StateCorrection_Load=
 	{
 		#Correct the initial state of the form to prevent the .Net maximized form issue
 		$MainForm.WindowState = $InitialFormWindowState
 	}
 	
-	$Form_StoreValues_Closing =
+	$Form_StoreValues_Closing=
 	{
 		#Store the control values
 	}
+
 	
-	
-	$Form_Cleanup_FormClosed =
+	$Form_Cleanup_FormClosed=
 	{
 		#Remove all event handlers from the controls
 		try
@@ -528,7 +531,7 @@ namespace SAPIENTypes
 		catch { Out-Null <# Prevent PSScriptAnalyzer warning #> }
 	}
 	#endregion Generated Events
-	
+
 	#----------------------------------------------
 	#region Generated Form Code
 	#----------------------------------------------
@@ -2660,6 +2663,7 @@ APw/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA')
 	$lblCpuVal.Text = '0 %'
 	$lblCpuVal.TextAlign = 'MiddleCenter'
 	$lblCpuVal.UseCompatibleTextRendering = $True
+	$lblCpuVal = $CpuUsage
 	#
 	# pbRam
 	#
@@ -2874,9 +2878,9 @@ zO5YtvyGKoMlVAHMIg2G+QGIM5b1/8wbKnIaBY6WAAAAAElFTkSuQmCC')
 	$menustripTheme.ResumeLayout()
 	$MainForm.ResumeLayout()
 	#endregion Generated Form Code
-	
+
 	#----------------------------------------------
-	
+
 	#Save the initial state of the form
 	$InitialFormWindowState = $MainForm.WindowState
 	#Init the OnLoad event to correct the initial state of the form
@@ -2887,7 +2891,7 @@ zO5YtvyGKoMlVAHMIg2G+QGIM5b1/8wbKnIaBY6WAAAAAElFTkSuQmCC')
 	$MainForm.add_Closing($Form_StoreValues_Closing)
 	#Show the Form
 	return $MainForm.ShowDialog()
-	
+
 }
 #endregion Source: MainForm.psf
 

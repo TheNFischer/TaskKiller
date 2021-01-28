@@ -486,8 +486,6 @@ namespace SAPIENTypes
 	
 	$btnCloseAll_Click = {
 		$MainForm.Close()
-		Get-Process -Name Starter.ps1 | where $_Id -NE $PID | Stop-Process
-		#Stop-Job -Name "..\Starter.ps1"
 	}
 	
 	# --End User Generated Script--
